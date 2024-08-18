@@ -1,0 +1,65 @@
+import json
+
+class ToDoList:
+    def __init__(self):
+        self.tasks = []
+
+    def add_task(self, task):
+        self.tasks.append({"task": task, "completed": False})
+
+    def view_tasks(self):
+        for index, task in enumerate(self.tasks, start=1):
+            status = "Done" if task["completed"] else "Pending"
+            print(f"{index}. {task['task']} - {status}")
+
+    def update_task(self, index):
+        if 0 <= index < len(self.tasks):
+            self.tasks[index]["completed"] = True
+            print("Task marked as completed.")
+
+    def delete_task(self, index):
+        if 0 <= index < len(self.tasks):
+            self.tasks.pop(index)
+            print("Task deleted.")
+
+    def save_tasks(self, filename):
+        with open(filename, 'w') as file:
+            json.dump(self.tasks, file)
+
+    def load_tasks(self, filename):
+        try:
+            with open(filename, 'r') as file:
+                self.tasks = json.load(file)
+        except FileNotFoundError:
+            print("No saved tasks found.")
+
+def main():
+    todo = ToDoList()
+    while True:
+        print("\n1. Add Task\n2. View Tasks\n3. Update Task\n4. Delete Task\n5. Save\n6. Load\n7. Exit")
+        choice = input("Enter your choice: ")
+
+        if choice == '1':
+            task = input("Enter task: ")
+            todo.add_task(task)
+        elif choice == '2':
+            todo.view_tasks()
+        elif choice == '3':
+            index = int(input("Enter task number to update: ")) - 1
+            todo.update_task(index)
+        elif choice == '4':
+            index = int(input("Enter task number to delete: ")) - 1
+            todo.delete_task(index)
+        elif choice == '5':
+            filename = input("Enter filename to save: ")
+            todo.save_tasks(filename)
+        elif choice == '6':
+            filename = input("Enter filename to load: ")
+            todo.load_tasks(filename)
+        elif choice == '7':
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
